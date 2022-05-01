@@ -1,0 +1,49 @@
+function [espacioCcas, JespacioCcas] = funcion_selecciona_vector_ccas_3_dim(XoI,YoI)
+
+% Se va a buscar los mejores 9 descriptores individualmente, una vez
+% encontrado, se va a ver que conjunto de 3 descriptores es el mejor
+% combinando los 9 descriptores primeros.
+
+[numMuestras, numDescriptores] = size(XoI);
+%codifClases = unique (YoI);
+%numClases = length(codifClases);
+
+%% Determinamos los 9 mejores descriptores individuales
+outputs = YoI';
+ValoresJ = zeros(1,numDescriptores);
+
+%Sacamos que bueno es cada descriptor
+for j=1:numDescriptores
+   inputs= XoI(:,j)';
+   ValoresJ(1,j)=indiceJ(inputs,outputs);
+end
+
+[valoresJord, indices]= sort(ValoresJ,'descend');
+
+mejoresDInd = indices(1:9); %mejores descriptores individualmente
+JmejoresDInd = valoresJord(1:9); %valores de J de esos descriptores
+
+%% Determinar que 3 de esos 9 descriptores son la mejor combinación
+NuevaX= XoI(:,mejoresDInd);
+comb = combnk(1:9,3);% genera combinaciones de 3 elementos del 1 al 9
+
+numComb = size(comb,1);
+
+outputs =YoI';
+valoresJ = zeros(numComb,1);
+
+for i=1:numComb
+    columnasOI = comb(i,:);
+    inputs = NuevaX(:,columnasOI)';
+    valoresJ(i) = indiceJ(inputs,outputs);
+end
+
+[valoresJord, indicesComb] = sort(valoresJ,'descend');
+
+mejoresDComb= comb(indicesComb(1),:); %mejores descriptores de forma conjunta
+JespacioCcas = valoresJord(1); %valores de J de ese espacion formado por esos descriptores
+    
+espacioCcas = indices
+
+end
+
